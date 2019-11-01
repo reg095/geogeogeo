@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="css/stylesheet.css" rel="stylesheet">
+    <link href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" rel="stylesheet"/>
+    <title>Geolocator</title>
+</head>
+<body>
+    <h2>Geo locator to faciliate easy integration of location data</h2>
+    <div id="main-div" class="card">
+        <label class="label">Click the below button to get Geolocation</label><br><br><br>
+        <input id="button" type="button" value="Get my geolocation" onclick="geolocation()">
+		<button onclick="myFunction()">Try it</button>
+        <br><br>
+        <!-- The below div will hold the data -->
+        <label id="output" class="label"></label>
+        <label id="preview" class="label"></label>
+        <div id="osm-map"></div>
+        <div id="out">
+            <label>Copy and paste the lat and lng values to the:</label><br>
+            <!-- Start ignoring LineLengthBear, HTMLLintBear -->
+            <a href="https://github.com/fossasia/gci18.fossasia.org/edit/master/_data/mentors.yml">Mentors file [If you are a mentor]</a><br>
+            <!-- stop ignoring -->
+        </div>
+    </div>
+    <div class="card" id="info">Created with ♡ for FOSSASIA</div>
+    <!--<script src="js/main.js"></script>-->
+	
+<script>
+let output = document.getElementById("output");
+let out = document.getElementById("out");
+function myFunction() {
+  setInterval(function(){ geolocation(); }, 1000);
+}
+const geolocation = () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(rit, fileit);
+        document.getElementById("button").value = "Get my geolocation again";
+        document.getElementById("button").onclick = "window.location.reload();"; // reloads and executes the geolocation();
+    }
+    else {
+        output.innerHTML = "Geolocation is not supported by this browser";
+        output.style.display = "inherit";
+    }
+}
+
+const rit = (position) => {
+    let mylocation = `lat:${position.coords.latitude}<br>`;
+    mylocation += `lng:${position.coords.longitude}<br><br>`;
+    output.innerHTML = mylocation;
+    my_preview = `https://www.google.com/maps/?q=${position.coords.latitude},${position.coords.longitude}`;
+    preview.innerHTML = `<a target='_blank' href='${my_preview}>Google Maps!</a><br><br>`;
+    let element = document.getElementById('osm-map');
+    element.style = 'height:300px;';
+    let map = L.map(element);
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    let target = L.latLng(position.coords.latitude, position.coords.longitude);
+    map.setView(target, 14);
+    L.marker(target).addTo(map);
+    output.style.display = "none";
+    output.style.display = "inherit";
+    out.style.display = "inherit";
+}
+
+const fileit = (error) => {
+    switch (error.code) {
+        case error.PERMISSION_DENIED:
+            output.innerHTML = "Permission Denied, please give permission and try again";
+            break;
+        case error.POSITION_UNAVAILABLE:
+            output.innerHTML = "Position information is unavailable please try after some time";
+            break;
+        case error.TIMEOUT:
+            output.innerHTML = "Request Timed out, please try again";
+            break;
+        case error.UNKNOWN_ERROR:
+            output.innerHTML = "Unknown Error please try again";
+            break;
+    }
+}
+</script>
+ <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+</body>
+</html>
